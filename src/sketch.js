@@ -4,6 +4,7 @@ const windowSize = 400;
 const cellSize = 5;
 let rows, cols;
 
+const FRAME_RATE = 1;
 const ALIVE = true;
 const DEAD = false;
 
@@ -22,6 +23,7 @@ function setup() {
   setCell(10, 12, ALIVE);
   setCell(11, 12, ALIVE);
   flipBuffers();
+  frameRate(FRAME_RATE);
 }
 
 function draw() {
