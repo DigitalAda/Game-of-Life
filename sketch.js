@@ -37,7 +37,6 @@ function draw() {
   }
   updateCells();
   flipBuffers();
-  if (frameCount === 3) noLoop();
 }
 
 let getCell = (x, y) => {
