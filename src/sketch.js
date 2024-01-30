@@ -59,7 +59,7 @@ let updateCells = () => {
 };
 
 let getNextState = (x, y) => {
-  
+  neightbourCount = countNegighbours(x, y);
   if (getCell(x, y) === ALIVE) {
     neightbourCount--;
     if (neightbourCount === 2 || neightbourCount === 3) {
@@ -87,7 +87,7 @@ let countNegighbours = (x, y) => {
     }
   }
   return neightbourCount;
-}
+};
 
 let flipBuffers = () => {
   let temp = cells;
