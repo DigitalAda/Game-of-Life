@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use eframe::egui::{self, TextureOptions};
 mod life;
 
@@ -8,6 +10,7 @@ struct MyApp {
 }
 impl MyApp {
     fn draw_grid(&self, buffer: &mut Vec<u8>) {
+        println!("Drawing");
         let grid_size = self.grid.size();
         let row_length = grid_size[0] * self.cell_size;
         for row in 0..grid_size[1] {
@@ -20,7 +23,7 @@ impl MyApp {
                 for column in 0..grid_size[0] {
                     // Draw vertical lines
                     buffer[column * self.cell_size + row_index + row_offset * row_length] = 0;
-                    let state = self.grid.is_alive(column, row);
+                    let state = self.grid.is_alive(column as i32, row as i32);
                     let color: u8 = if state { 200 } else { 50 };
                     for column_offset in 1..self.cell_size {
                         buffer[column * self.cell_size
@@ -54,15 +57,19 @@ impl eframe::App for MyApp {
             let buffer_size = texture_size[0] * texture_size[1];
 
             let mut buffer: Vec<u8> = vec![255; buffer_size];
-
+            self.grid = self.grid.next_grid();
             self.draw_grid(&mut buffer);
 
             let image = egui::ColorImage::from_gray(texture_size, buffer.as_slice());
             let text_opts = TextureOptions::NEAREST;
-            let texture: &egui::TextureHandle = self
-                .texture
-                .get_or_insert_with(|| ui.ctx().load_texture("image_name", image, text_opts));
+            let texture: &egui::TextureHandle = self.texture.get_or_insert_with(|| {
+                ui.ctx()
+                    .load_texture(format!("Frame {}", ctx.frame_nr()), image, text_opts)
+            });
+            ui.heading(texture.name());
             ui.image(texture);
+
+            // ctx.request_repaint_after(Duration::from_millis(1000))
         });
     }
 }
