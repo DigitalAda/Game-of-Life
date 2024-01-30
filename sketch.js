@@ -1,10 +1,10 @@
 let cells = [];
 let backCells = [];
-const windowSize = 400;
-const cellSize = 5;
+const windowSize = 900;
+const cellSize = 10;
 let rows, cols;
 
-const FRAME_RATE = 1;
+const FRAME_RATE = 60;
 const ALIVE = true;
 const DEAD = false;
 
@@ -16,12 +16,7 @@ function setup() {
     cells.push(DEAD);
     backCells.push(DEAD);
   }
-
-  setCell(10, 10, ALIVE);
-  setCell(11, 11, ALIVE);
-  setCell(9, 12, ALIVE);
-  setCell(10, 12, ALIVE);
-  setCell(11, 12, ALIVE);
+  addStuff();
   flipBuffers();
   frameRate(FRAME_RATE);
 }
@@ -42,6 +37,7 @@ function draw() {
   }
   updateCells();
   flipBuffers();
+  if (frameCount === 3) noLoop();
 }
 
 let getCell = (x, y) => {
@@ -49,7 +45,11 @@ let getCell = (x, y) => {
   y = (y + cols) % cols;
   return cells[x + cols * y];
 };
-let setCell = (x, y, value) => (backCells[x + cols * y] = value);
+let setCell = (x, y, value) => {
+  x = (x + rows) % rows;
+  y = (y + cols) % cols;
+  return (backCells[x + cols * y] = value);
+};
 
 let updateCells = () => {
   for (let y = 0; y < rows; y++) {
@@ -95,4 +95,66 @@ let flipBuffers = () => {
   let temp = cells;
   cells = backCells;
   backCells = temp;
+};
+
+let addStuff = () => {
+  let center = { x: rows / 2, y: cols / 2 };
+  let corner = { x: center.x + rows / 3, y: center.y + cols / 3 };
+
+  glider(corner.x - 5, corner.y - 5);
+  glider(corner.x + 5, corner.y - 5);
+  glider(corner.x + 5, corner.y + 5);
+  glider(corner.x - 5, corner.y + 5);
+
+  glider(-corner.x - 5, -corner.y - 5);
+  glider(-corner.x + 5, -corner.y - 5);
+  glider(-corner.x + 5, -corner.y + 5);
+  glider(-corner.x - 5, -corner.y + 5);
+
+  glider(center.x - 5, center.y - 5);
+  glider(center.x + 5, center.y - 5);
+  glider(center.x + 5, center.y + 5);
+  glider(center.x - 5, center.y + 5);
+
+  blinker(-10, 10);
+  blinker(-20, 10);
+  blinker(-20, 20);
+  blinker(-10, 20);
+  blinker(10, -10);
+  blinker(20, -10);
+  blinker(20, -20);
+  blinker(10, -20);
+  pentadecathlon(rows / 2, -20);
+  pentadecathlon(rows / 2, +20);
+  pentadecathlon(-20, cols / 2);
+  pentadecathlon(+20, cols / 2);
+};
+
+let glider = (x, y) => {
+  setCell(x - 1, y + 0, ALIVE);
+  setCell(x - 0, y + 1, ALIVE);
+  setCell(x + 1, y - 1, ALIVE);
+  setCell(x + 1, y + 0, ALIVE);
+  setCell(x + 1, y + 1, ALIVE);
+};
+
+let blinker = (x, y) => {
+  setCell(x - 1, y, ALIVE);
+  setCell(x + 0, y, ALIVE);
+  setCell(x + 1, y, ALIVE);
+};
+
+let pentadecathlon = (x, y) => {
+  setCell(x + 0, y - 5, ALIVE);
+  setCell(x + 0, y - 4, ALIVE);
+  setCell(x - 1, y - 3, ALIVE);
+  setCell(x + 1, y - 3, ALIVE);
+  setCell(x + 0, y - 2, ALIVE);
+  setCell(x + 0, y - 1, ALIVE);
+  setCell(x + 0, y + 0, ALIVE);
+  setCell(x + 0, y + 1, ALIVE);
+  setCell(x - 1, y + 2, ALIVE);
+  setCell(x + 1, y + 2, ALIVE);
+  setCell(x + 0, y + 3, ALIVE);
+  setCell(x + 0, y + 4, ALIVE);
 };
